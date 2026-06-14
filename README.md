@@ -21,13 +21,13 @@ CareerPilot AI is an intelligent full-stack career engineering web application d
 ### 🗺️ Smart Curated Roadmap
 
 * Generates personalized week-by-week learning plans.
-* Suggests projects based on identified skill gaps.
+* Suggests certificates based on identified skill gaps.
 * Powered by Gemini 2.5 Flash.
 
 ### 🤖 1-on-1 Interview Simulator
 
 * Conducts dynamic technical interviews.
-* Evaluates responses with scores out of 10.
+* Evaluates responses.
 * Provides real-time feedback and improvement suggestions.
 
 ---
@@ -83,7 +83,3 @@ python -m streamlit run app.py
 ```
 
 ---
-
-## 🎓 Academic Project
-
-Developed as a Capstone Engineering Project to assist students in aligning academic preparation with industry requirements through AI-powered career guidance and interview readiness.
