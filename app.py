@@ -128,50 +128,81 @@ if df is not None:
                             st.error(f"An unexpected error occurred: {e}")
 
     # ----------------------------------------
-    # TAB 3: LIVE MOCK INTERVIEW (Idea B Flow!)
+    # TAB 3: LIVE MOCK INTERVIEW (Agentic Chat UI Upgrade)
     # ----------------------------------------
     with tab3:
-        st.header("1-on-1 Dynamic Interview Trainer")
+        st.header("🤖 1-on-1 Dynamic Interview Trainer")
         
-        if 'current_question' not in st.session_state:
-            st.session_state['current_question'] = None
+        # Guard rail: Make sure they analyzed their profile in Tab 1 first!
+        if 'analysis' not in st.session_state:
+            st.info("⚠️ Please analyze your profile in Tab 1 first so the interviewer knows your target role and skill gaps!")
+        else:
+            analysis = st.session_state['analysis']
+            missing_skills_str = ", ".join(analysis['Skills You Need']) if analysis['Skills You Need'] else "None (Core requirements met)"
             
-        if st.button("Generate Dynamic Interview Question 🎲"):
-            with st.spinner("Fetching question from server..."):
+            # 1. Initialize the Chat Message History Storage
+            if 'interview_messages' not in st.session_state:
+                st.session_state['interview_messages'] = []
+                
+            # 2. Initialize the Persistent Gemini Chat Session
+            if 'gemini_chat' not in st.session_state:
                 try:
                     model = genai.GenerativeModel('gemini-2.5-flash')
-                    prompt = f"Generate exactly one core technical interview question for a role as a '{selected_job}'. Do not provide any introduction, greetings, or multiple choices."
-                    st.session_state['current_question'] = model.generate_content(prompt).text
+                    
+                    # System Instructions establish the AI's identity, constraints, and target difficulty level
+                    system_prompt = f"""
+                    You are an elite, empathetic technical interviewer assessing a final-year BTech engineering student.
+                    The student is targeting the role of a '{selected_job}'.
+                    
+                    CRITICAL INSTRUCTION:
+                    Your goal is to test them on their missing skills: [{missing_skills_str}]. 
+                    Keep the question difficulty strictly at an 'Easy to Medium' level appropriate for a graduating college student.
+                    
+                    RULES:
+                    1. Ask exactly ONE technical question at a time.
+                    2. When the student provides an answer, briefly grade it (give technical correctness feedback out of 10), provide 1-2 quick bullet points on how to phrase it better, and then seamlessly ask the next question.
+                    3. Do not write lengthy paragraphs. Keep your responses short, scannable, and engaging.
+                    """
+                    
+                    # We start a conversational thread session with our system persona rules
+                    st.session_state['gemini_chat'] = model.start_chat(history=[])
+                    
+                    # Trigger the first greeting question from the interviewer agent
+                    with st.spinner("Initializing interviewer agent..."):
+                        initial_trigger = f"Introduce yourself briefly with a welcoming emoji and ask the very first easy technical question regarding the missing skills: {missing_skills_str}."
+                        response = st.session_state['gemini_chat'].send_message(initial_trigger)
+                        
+                        # Save this first question to our visual UI log
+                        st.session_state['interview_messages'].append({"role": "assistant", "content": response.text})
                 except Exception as e:
-                    if "429" in str(e) or "Quota" in str(e):
-                        st.warning("⏳ **Google Server Speed Bump!** Please wait 10-15 seconds for the free tier quota to reset, then click generate again!")
-                    else:
-                        st.error(f"An unexpected error occurred: {e}")
+                    st.error(f"Failed to start the AI session: {e}")
+
+            # 3. Redraw the entire WhatsApp-style chat history layout on every single rerun
+            for msg in st.session_state['interview_messages']:
+                with st.chat_message(msg["role"]):
+                    st.markdown(msg["content"])
+
+            # 4. Handle New User Input Replies
+            if user_reply := st.chat_input("Type your technical answer here..."):
                 
-        if st.session_state['current_question']:
-            st.info(f"🤖 **Interviewer:** {st.session_state['current_question']}")
-            
-            student_ans = st.text_area("✍️ Type your answer here:", height=100)
-            
-            if st.button("Submit Answer for Evaluation 📋"):
-                if not student_ans.strip():
-                    st.warning("Please type something before submitting!")
-                else:
-                    with st.spinner("AI is grading your technical accuracy..."):
+                # Immediately show and save what you typed
+                with st.chat_message("user"):
+                    st.markdown(user_reply)
+                st.session_state['interview_messages'].append({"role": "user", "content": user_reply})
+                
+                # Send your answer to the running Gemini session and await the evaluation + next question
+                with st.chat_message("assistant"):
+                    with st.spinner("Interviewer is evaluating..."):
                         try:
-                            model = genai.GenerativeModel('gemini-2.5-flash')
-                            eval_prompt = f"""
-                            You are an expert interviewer. Grade this answer out of 10.
-                            Question: {st.session_state['current_question']}
-                            Candidate Answer: {student_ans}
-                            Provide an objective score, technical correctness breakdown, and exactly two bullets points on how to phrase it better.
-                            """
-                            eval_res = model.generate_content(eval_prompt)
-                            st.markdown(eval_res.text)
+                            ai_response = st.session_state['gemini_chat'].send_message(user_reply)
+                            st.markdown(ai_response.text)
+                            
+                            # Save the interviewer's critique and next question to memory logs
+                            st.session_state['interview_messages'].append({"role": "assistant", "content": ai_response.text})
                         except Exception as e:
                             if "429" in str(e) or "Quota" in str(e):
-                                st.warning("⏳ **Google Server Speed Bump!** The AI is processing data, but we hit the free-tier limit. Wait 15 seconds and hit submit again to get your scorecard!")
+                                st.warning("⏳ **Google Rate Limit Hit!** Please wait 10 seconds and try sending your message again.")
                             else:
-                                st.error(f"An unexpected error occurred: {e}")
+                                st.error(f"Error communicating with AI: {e}")
 
             
