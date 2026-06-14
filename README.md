@@ -1,66 +1,89 @@
 # 🚀 CareerPilot AI
 
-[![Python Version](https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![Framework](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![Model Engine](https://img.shields.io/badge/AI-Gemini_2.5_Flash-007ACC?logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
+[![Python Version](https://img.shields.io/badge/Python-3.12-blue?logo=python\&logoColor=white)](https://www.python.org/)
+[![Framework](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit\&logoColor=white)](https://streamlit.io/)
+[![Model Engine](https://img.shields.io/badge/AI-Gemini_2.5_Flash-007ACC?logo=google\&logoColor=white)](https://deepmind.google/technologies/gemini/)
 
 > **An Agentic Career Counseling & Adaptive Mock Interview Ecosystem**
 
-CareerPilot AI is an intelligent full-stack career engineering web application designed to help engineering students bridge the gap between academic skills and industry expectations. It analyzes student profiles against real-world job market data matrices and leverages Generative AI to map personalized learning paths and host dynamic, stateful mock interview simulation chambers.
+CareerPilot AI is an intelligent full-stack career engineering web application designed to help engineering students bridge the gap between academic skills and industry expectations. It analyzes student profiles against real-world job market data and leverages Generative AI to create personalized learning paths and conduct adaptive mock interviews.
 
 ---
 
 ## ✨ Core Features
 
-* **📊 Profile Matrix Analyzer:** Leverages an engineered dataset of IT job roles to calculate a student's technical alignment percentage and maps explicit core competency gaps via a sleek multi-select UI.
-* **🗺️ Smart Curated Roadmap:** Uses Google Gemini to dynamically orchestrate custom, week-by-week chronological learning paths and practical project conceptual blueprints based on identified skill gaps.
-* **🤖 1-on-1 Interview Simulator:** Features an interactive evaluation chamber that serves technical questions one-at-a-time, grades responses out of 10, and provides real-time, constructive phrasing enhancements.
+### 📊 Profile Matrix Analyzer
+
+* Calculates skill alignment percentage for selected IT roles.
+* Identifies competency gaps using a structured skill matrix.
+* Interactive multi-select skill assessment interface.
+
+### 🗺️ Smart Curated Roadmap
+
+* Generates personalized week-by-week learning plans.
+* Suggests projects based on identified skill gaps.
+* Powered by Gemini 2.5 Flash.
+
+### 🤖 1-on-1 Interview Simulator
+
+* Conducts dynamic technical interviews.
+* Evaluates responses with scores out of 10.
+* Provides real-time feedback and improvement suggestions.
 
 ---
 
 ## 🛠️ Tech Stack & Architecture
 
-* **Frontend UI Engine:** Streamlit Framework wrapped in premium custom glassmorphism CSS overrides.
-* **Data Science Layer:** Pandas Dataframe processing engine.
-* **AI Orchestration:** Google GenAI SDK (`gemini-2.5-flash`) utilizing stateful conversational structures and custom system instructions.
-* **Environment Configuration:** Python-Dotenv secret manager.
+* **Frontend:** Streamlit
+* **Data Processing:** Pandas
+* **AI Engine:** Gemini 2.5 Flash
+* **Environment Management:** Python-Dotenv
 
 ---
 
 ## 📊 Dataset Schema Overview
 
-The background algorithm matches user inputs against a standardized `IT_Job_Roles_Skills.csv` workbook file structured as follows:
+The application uses an `IT_Job_Roles_Skills.csv` dataset.
 
-| Column Name | Data Type | Description |
-| :--- | :--- | :--- |
-| `Job Title` | String (Key) | The targeted professional industry track (e.g., Data Engineer) |
-| `Skills` | String (CSV) | Comma-separated list of core baseline technologies expected by the industry |
-| `Certifications` | String | Highly rated industry credentials recommended to clear screening filters |
+| Column Name    | Data Type    | Description                                 |
+| -------------- | ------------ | ------------------------------------------- |
+| Job Title      | String       | Target IT role (e.g., Data Engineer)        |
+| Skills         | String (CSV) | Core technical skills required for the role |
+| Certifications | String       | Recommended industry certifications         |
 
 ---
 
 ## 🚀 Local Installation & Setup
 
-Follow these structured steps to deploy the workspace ecosystem on your local workstation:
-
 ### 1. Clone the Repository
+
 ```bash
-git clone [https://github.com/YOUR_USERNAME/CareerPilot_AI.git](https://github.com/YOUR_USERNAME/CareerPilot_AI.git)
+git clone https://github.com/YOUR_USERNAME/CareerPilot_AI.git
 cd CareerPilot_AI
+```
 
-2. Configure Dependencies
-Ensure you have Python 3.12+ configured. Install the required ecosystem library dependencies:
+### 2. Install Dependencies
 
-Bash
+```bash
 python -m pip install streamlit pandas google-generativeai python-dotenv
-3. Establish Secret Environmental Tokens
-Create a hidden file named .env in the root directory structure and insert your generative AI credentials:
+```
 
-Plaintext
+### 3. Configure Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
 GEMINI_API_KEY=your_free_gemini_api_key_here
-4. Run the Application
-Execute the host interface compiler layer via your command terminal:
+```
 
-Bash
+### 4. Run the Application
+
+```bash
 python -m streamlit run app.py
-Developed as a Capstone Engineering Milestone Project.
+```
+
+---
+
+## 🎓 Academic Project
+
+Developed as a Capstone Engineering Project to assist students in aligning academic preparation with industry requirements through AI-powered career guidance and interview readiness.
